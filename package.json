@@ -1,0 +1,17 @@
+{
+  "name": "chai-or-backend",
+  "version": "1.0.0",
+  "description": "a backned in at chai",
+  "keywords": [
+    "javascript",
+    "backend",
+    "chai"
+  ],
+  "license": "ISC",
+  "author": "Karan gosavi",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
