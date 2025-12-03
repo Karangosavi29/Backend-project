@@ -54,7 +54,7 @@ const userSchema = new Schema(
 
 userSchema.pre("save",async function(next){
     if(!this.ismodified("password")) return next();  // to avoid rehashing if password is not modified
-    this.password=bcrypt.hash(this.password,10)     // hashing the password with salt rounds 10
+    this.password= await bcrypt.hash(this.password,10)     // hashing the password with salt rounds 10
     next();
 })
 
