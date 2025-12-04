@@ -18,8 +18,11 @@ const registerUser = asyncHandler(async (req, res)=>{
     // remove password and refresh token  field from response
     // check for user created or not 
     // return response to frontend
+
+
+
     const {fullname ,email,username , password} =  req.body           
-    console.log("email: ",email)                               //take data from json or form then use req.body
+    // console.log("email: ",email)                               //take data from json or form then use req.body
     
     
 
@@ -31,7 +34,7 @@ const registerUser = asyncHandler(async (req, res)=>{
     }
     
 
-    const existeduser =user.findone({
+    const existeduser = await user.findOne({
 
         $or :[{username},{email}]
     })
@@ -42,29 +45,35 @@ const registerUser = asyncHandler(async (req, res)=>{
     }
 
     const avatarLocalpath = req.files?.avatar[0]?.path;
-    const coverImageLocalpath = req.files?.coverImage[0]?.path;
+    // const coverImageLocalpath = req.files?.coverImage[0]?.path;   //if cover image is compulsary to put
+
+    let coverImageLocalPath;
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
+
 
     if(!avatarLocalpath){
         throw new Apierror(400,"Avatar file is required")
     }
 
     const avatar = await uploadOncloudinary(avatarLocalpath)
-    const coverImage =await uploadOncloudinary(coverImageLocalpath)
+    const coverImage =await uploadOncloudinary(coverImageLocalPath)
 
     if(!avatar){
         throw new Apierror(400,"Avatar file is required")
     }
 
-    user.create({
+    const newuser =await user.create({
         fullname,
         avatar:avatar.url,
         coverImage:coverImage?.url || " ",
         email,
         password,
-        username: username.tolowercase()
+        username: username.toLowerCase()
     })
 
-    const createduser = await user.findById(user._id).select(
+    const createduser = await user.findById(newuser._id).select(
          "-password -refreshTokens"
     )
     if(!createduser){

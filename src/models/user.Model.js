@@ -31,11 +31,11 @@ const userSchema = new Schema(
             required:[true,"password is required"],
 
         },
-        avtar:{
+        avatar:{
             type:String, //couldnary url
             required:true,
         },
-        coverimage:  {
+        coverImage:  {
             type:String, //couldnary url
         },
         watchhistory:[      // watch history of videos it is an array of video ids
@@ -53,7 +53,7 @@ const userSchema = new Schema(
 )
 
 userSchema.pre("save",async function(next){
-    if(!this.ismodified("password")) return next();  // to avoid rehashing if password is not modified
+    if(!this.isModified("password")) return next();  // to avoid rehashing if password is not modified
     this.password= await bcrypt.hash(this.password,10)     // hashing the password with salt rounds 10
     next();
 })
@@ -87,4 +87,4 @@ userSchema.methods.generateRefreshtoken=function(){
         } 
     )
 }
-export const user =mongoose.model("user")
+export const user =mongoose.model("user",userSchema)

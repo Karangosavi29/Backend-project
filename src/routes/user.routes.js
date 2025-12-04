@@ -8,8 +8,8 @@ const router =Router()
 
 router.route("/register").post(
     upload.fields([                         // multiple files upload but not like array  only specific files
-        {name:"avtar",maxCount:1},
-        {name:"coverimage",maxCount:1},
+        {name:"avatar",maxCount:1},
+        {name:"coverImage",maxCount:1},
     ]),
     registerUser
 )
