@@ -1,6 +1,7 @@
-import { Apierror } from "../utils/Apierror"
-import {asyncHandler} from "../utils/asynchandler"
+import { Apierror } from "../utils/Apierror.js"
+import {asyncHandler} from "../utils/asynchandler.js"
 import jwt from "jsonwebtoken"
+import {user} from "../models/user.Model.js"
 
 
 
