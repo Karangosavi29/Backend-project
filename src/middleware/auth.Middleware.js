@@ -1,7 +1,7 @@
 import { Apierror } from "../utils/Apierror.js"
 import {asyncHandler} from "../utils/asynchandler.js"
 import jwt from "jsonwebtoken"
-import {user} from "../models/user.Model.js"
+import {User} from "../models/user.Model.js"
 
 
 
@@ -14,7 +14,7 @@ export const verifyJWT =asyncHandler (async (req,_ ,next)=> {    // req,res and 
         }
     
         const decodedToken = jwt.verify(Token,process.env.ACCESS_TOKEN_SECRET)
-        await user.findById(decodedToken._id).select
+        await User.findById(decodedToken._id).select
         ("-password,-refreshTokens") //exclude password and refresh token from user data
     
         if(!user){
