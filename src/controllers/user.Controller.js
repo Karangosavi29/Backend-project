@@ -4,6 +4,7 @@ import {User} from "../models/user.Model.js";
 import {uploadOncloudinary} from "../utils/cloudinary.js";
 import {Apiresponse} from "../utils/Apiresponse.js";
 import jwt from "jsonwebtoken"
+import mongoose from "mongoose";
 
 
 // what the step to get data from frontend to backend eg register user
@@ -406,6 +407,59 @@ const getUserChannelProfile =asyncHandler(async (req,res) => {     //pipeline ag
 })
 
 
+const getWatchHistory = asyncHandler (async (req,res) => {
+    const user =await User.aggregate([
+        {
+            $match:{
+                _id: new mongoose.Types.ObjectId(req.user._id)
+            }
+        },
+        {
+            $lookup:{
+                from:"videos",
+                localField:"watchHistory",
+                foreignField:"_id",
+                as:"watchHistory",
+                pipeline:[                  //subpipeline
+                    {
+                        $lookup:{
+                            from:"users",
+                            localField:"owner",
+                            foreignField:"_id",
+                            as:"owner",
+                            pipeline:[
+                                {
+                                    $project:{
+                                        fullname:1,
+                                        username:1,
+                                        avatar:1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        $addFields:{
+                            owner:{
+                                $first:"$owner"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ])
+
+   
+
+
+    return res
+    .status(200)
+    .json(new Apiresponse(200,user[0].watchHistory,"watchHistory fetched succssfully"))
+
+})
+
+
 
 
 export {
@@ -419,6 +473,7 @@ export {
     updateUserAvatar,
     updateUserCoverImage,
     getUserChannelProfile,
+    getWatchHistory
     
 
 };
